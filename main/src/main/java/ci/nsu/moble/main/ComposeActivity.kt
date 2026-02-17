@@ -4,12 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +41,7 @@ import ci.nsu.moble.main.ui.theme.PracticeTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Button
+import ci.nsu.moble.main.colorsMap
 
 class ComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,92 +55,82 @@ class ComposeActivity : ComponentActivity() {
 
 private val colorsMap = mapOf(
     "Red" to Red,
-    //"Orange" to Orange,
+    "Orange" to Color(0xFFFFA500), //оранжевый
     "Yellow" to Yellow,
     "Green" to Green,
-    "Blue" to Blue
-    //"Indigo" to Indigo,
-    //"violet" to Violet)
+    "Blue" to Blue,
+    "Indigo" to Color(0xFF4B0082), //индиго
+    "Violet" to Color(0xFFEE82EE) //фиолетовый
 )
+
 
 
 @Composable
 fun MyApp() {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(60.dp),
-        verticalArrangement = Arrangement.Top
-        
+            .padding(60.dp)
+            .size(800.dp)//,
+
     ) {
         val message = remember { mutableStateOf("") }
         Column {
-            //Text(message.value, fontSize = 28.sp)
+
             TextField(
                 value = message.value,
                 textStyle = TextStyle(fontSize = 25.sp),
-                placeholder = {Text("Введите цвет")},
-                onValueChange = {newText -> message.value = newText}
+                placeholder = { Text("Введите цвет") },
+                onValueChange = { newText -> message.value = newText }
             )
         }
-        Button({})
+        Button(
+            { },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorsMap[message.value] ?: Color.Gray
+            ),
+            modifier = Modifier
+                .padding(0.dp, 5.dp, 0.dp, 5.dp)
+                .height(40.dp)
+                .fillMaxSize()
+
+
+
+        )
         {
             Text("Применить цвет")
 
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Button({},
-                shape = RectangleShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color()
+
+        Column()
+        {
+            colorsMap.forEach { (colorName, colorValue) ->
+                Button(
+                    { message.value = colorName },
+                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorValue
+                    ),
+                    modifier = Modifier
+                        .padding(0.dp, 0.dp, 0.dp, 5.dp)
+                        .height(40.dp)
+                        .fillMaxSize()
                 )
-            )
-            {
-                Text("Red")
+                {
+                    Text(colorName)
+                }
+
             }
 
-            Button({},
-                shape = RectangleShape)
-            {
-                Text("Orange")
-            }
-
-            Button({},
-                shape = RectangleShape)
-            {
-                Text("Yellow")
-            }
-
-            Button({},
-                shape = RectangleShape)
-            {
-                Text("Green")
-            }
-
-            Button({},
-                shape = RectangleShape)
-            {
-                Text("Blue")
-            }
-
-            Button({},
-                shape = RectangleShape)
-            {
-                Text("Violet")
-            }
         }
 
     }
-
 }
 
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PracticeTheme {
-        MyApp()
+    @Preview(showBackground = true)
+    @Composable
+    fun GreetingPreview() {
+        PracticeTheme {
+            MyApp()
+        }
     }
-}
