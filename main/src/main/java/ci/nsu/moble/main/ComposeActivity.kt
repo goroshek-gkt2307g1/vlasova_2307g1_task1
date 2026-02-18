@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,20 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Blue
@@ -38,17 +30,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ci.nsu.moble.main.ui.theme.PracticeTheme
-import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.Button
-import ci.nsu.moble.main.colorsMap
+import android.util.Log
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Magenta
 
 class ComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                MyApp()
+            MyApp()
         }
     }
 }
@@ -60,53 +52,77 @@ private val colorsMap = mapOf(
     "Green" to Green,
     "Blue" to Blue,
     "Indigo" to Color(0xFF4B0082), //индиго
-    "Violet" to Color(0xFFEE82EE) //фиолетовый
+    "Violet" to Color(0xFFEE82EE), //фиолетовый
+    "Magenta" to Magenta,
+    "Black" to Black
 )
-
-
 
 @Composable
 fun MyApp() {
     Column(
         modifier = Modifier
             .padding(60.dp)
-            .size(800.dp)//,
-
+            .size(800.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val message = remember { mutableStateOf("") }
-        Column {
+        val buttonColor = remember { mutableStateOf<Color?>(null) }
+        val errorMessage = remember { mutableStateOf("") }
 
+        Column {
             TextField(
                 value = message.value,
                 textStyle = TextStyle(fontSize = 25.sp),
                 placeholder = { Text("Введите цвет") },
-                onValueChange = { newText -> message.value = newText }
+                onValueChange = { newText ->
+                    message.value = newText
+                    errorMessage.value = ""
+                }
             )
         }
+
         Button(
-            { },
+            onClick = {
+                val foundColor = colorsMap[message.value]
+                if (foundColor != null) {
+                    buttonColor.value = foundColor
+                    errorMessage.value = ""
+                } else {
+                    buttonColor.value = null
+                    errorMessage.value = "Цвет «${message.value}» не найден"
+                }
+            },
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorsMap[message.value] ?: Color.Gray
+                containerColor = buttonColor.value ?: Color.Gray
             ),
             modifier = Modifier
                 .padding(0.dp, 5.dp, 0.dp, 5.dp)
                 .height(40.dp)
                 .fillMaxSize()
-
-
-
         )
         {
             Text("Применить цвет")
-
         }
+
+        if (errorMessage.value.isNotEmpty()) {
+            Text(
+                text = errorMessage.value,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Column()
         {
             colorsMap.forEach { (colorName, colorValue) ->
                 Button(
-                    { message.value = colorName },
+                    {
+                        message.value = colorName
+                        errorMessage.value = ""
+                    },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorValue
@@ -119,18 +135,15 @@ fun MyApp() {
                 {
                     Text(colorName)
                 }
-
             }
-
         }
-
     }
 }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun GreetingPreview() {
-        PracticeTheme {
-            MyApp()
-        }
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    PracticeTheme {
+        MyApp()
     }
+}
