@@ -86,9 +86,10 @@ fun MyApp() {
                 val foundColor = colorsMap[message.value]
                 if (foundColor != null) {
                     buttonColor.value = foundColor
-                    errorMessage.value = ""
+                    Log.d("ColorSearch", "Цвет '${message.value}' найден и применен")
                 } else {
                     buttonColor.value = null
+                    Log.d("ColorSearch", "Пользовательский цвет '${message.value}' не найден")
                     errorMessage.value = "Цвет «${message.value}» не найден"
                 }
             },
