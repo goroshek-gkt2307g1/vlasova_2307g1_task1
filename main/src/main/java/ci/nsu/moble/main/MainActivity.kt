@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import ci.nsu.moble.main.ui.theme.PracticeTheme
 import kotlinx.serialization.Serializable
 import kotlin.jvm.java
+import androidx.compose.ui.platform.LocalContext
 
 enum class LunchTrayScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
@@ -68,7 +69,7 @@ object What
 @Composable
 fun MainScreenActivity(modifier: Modifier = Modifier) {
     var text = remember { mutableStateOf("") }
-    val navController = rememberNavController()
+    val context = LocalContext.current
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
@@ -86,7 +87,8 @@ fun MainScreenActivity(modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 // TODO:  нужно добавить кнопку которая по клику открывает второе активити через интент
-
+                val intent = Intent(context, SecondActivity::class.java)
+                context.startActivity(intent)
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
