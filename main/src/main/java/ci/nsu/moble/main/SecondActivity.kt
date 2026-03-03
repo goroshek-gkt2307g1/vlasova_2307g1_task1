@@ -80,7 +80,6 @@ fun ScreenTwoScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SecondActivityScreen() {
-    // todo: create nav controller
     val context = LocalContext.current
     var receivedText by remember { mutableStateOf("") }
     val navController = rememberNavController()
@@ -95,7 +94,6 @@ fun SecondActivityScreen() {
         TopAppBar(
             title = { Text(receivedText) }, navigationIcon = {
                 IconButton(onClick = {
-                    // TODO: create intent and start MainActivity
                     if (context is Activity) {
                         context.finish()
                     }
