@@ -1,83 +1,120 @@
 package ci.nsu.moble.main
 
 import ShoppingViewModel
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun ShoppingListScreen(modifier: Modifier = Modifier)
-{
+fun ShoppingListScreen(modifier: Modifier = Modifier) {
     val viewModel: ShoppingViewModel = viewModel()
-    val uiState by viewModel.uiState.collectAsState()
-    var text by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState() //обновляет ui
 
-    Column()
+    Column(
+        modifier = Modifier
+            .padding(60.dp)
+    )
     {
-        Row()
+        Column()
         {
             TextField(
-                value = text,
+                value = uiState.newItemText,
                 textStyle = TextStyle(fontSize = 25.sp),
                 placeholder = { Text("Введите текст") },
                 onValueChange = { newText ->
-                    text = newText
-
+                    viewModel.onNewItemTextChanged(newText)
                 },
+                modifier = Modifier
+                    .padding(0.dp, 5.dp, 0.dp, 5.dp)
+                    .height(60.dp)
+                    .fillMaxSize()
             )
             Button(
                 onClick = {
                     viewModel.addItem()
-                }, modifier = Modifier.padding(top = 16.dp)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Magenta
+                ),
+                modifier = Modifier
+                    .padding(0.dp, 5.dp, 0.dp, 5.dp)
+                    .height(40.dp)
+                    .fillMaxSize()
             ) {
                 Text("Добавить")
             }
         }
 
-        Column()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        )
         {
-            uiState.items.forEach { item ->
+            items(uiState.items) { item ->
                 ShoppingItemRow(
                     item = item,
                     onCheckedChange = { viewModel.toggleItemBought(item.id) },
-                    onDelete = {viewModel.deleteItem(item.id)}
+                    onDelete = { viewModel.deleteItem(item.id) }
+
                 )
             }
-            }
         }
-
     }
+
+}
 
 @Composable
 fun ShoppingItemRow(
-    item : ShoppingItem,
+    item: ShoppingItem,
     onCheckedChange: () -> Unit,
     onDelete: () -> Unit
 ) {
 
-    Row(modifier = Modifier.padding(8.dp))
+    Row(modifier = Modifier.padding(0.dp, 8.dp))
     {
         Checkbox(
             checked = item.isBought,
-            onCheckedChange = {onCheckedChange}
+            onCheckedChange = { onCheckedChange() },
+            colors = CheckboxDefaults.colors(Color.Gray)
+
         )
-        Text(text=item.name)
-        Button(onClick = onDelete)
+        Text(
+            text = item.name,
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Button(
+            onClick = onDelete,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red
+            ),
+        )
         {
             Text("Удалить")
         }
