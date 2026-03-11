@@ -1,15 +1,12 @@
 package ci.nsu.moble.main
 
 import ShoppingViewModel
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -29,13 +26,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun ShoppingListScreen(modifier: Modifier = Modifier) {
+fun ShoppingListScreen() {
     val viewModel: ShoppingViewModel = viewModel()
-    val uiState by viewModel.uiState.collectAsState() //обновляет ui
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
             .padding(60.dp)
+            .size(800.dp)
     )
     {
         Column()
@@ -46,11 +44,9 @@ fun ShoppingListScreen(modifier: Modifier = Modifier) {
                 placeholder = { Text("Введите текст") },
                 onValueChange = { newText ->
                     viewModel.onNewItemTextChanged(newText)
-                },
-                modifier = Modifier
-                    .padding(0.dp, 5.dp, 0.dp, 5.dp)
-                    .height(60.dp)
-                    .fillMaxSize()
+
+                }
+
             )
             Button(
                 onClick = {
@@ -68,17 +64,13 @@ fun ShoppingListScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        )
+        LazyColumn()
         {
             items(uiState.items) { item ->
                 ShoppingItemRow(
                     item = item,
                     onCheckedChange = { viewModel.toggleItemBought(item.id) },
                     onDelete = { viewModel.deleteItem(item.id) }
-
                 )
             }
         }
