@@ -15,12 +15,18 @@
         android:theme="@style/Theme.Draft"
         tools:ignore="Instantiatable">
         <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:label="@string/title_activity_register"
+            android:theme="@style/Theme.Draft" />
+        <activity
             android:name=".AuthActivity"
             android:exported="true"
             android:label="@string/title_activity_auth"
             android:theme="@style/Theme.Draft">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -53,8 +59,7 @@
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Draft">
-        </activity>
+            android:theme="@style/Theme.Draft"></activity>
     </application>
 
 </manifest>

@@ -1,7 +1,9 @@
 package ci.nsu.mobile.main
 
 import android.app.Application
+import androidx.lifecycle.viewmodel.compose.viewModel
 import data.TokenManager
+import viewmodel.AuthViewModel
 
 class MyApplication() : Application()
 {
@@ -10,4 +12,5 @@ class MyApplication() : Application()
         super.onCreate()
         TokenManager.init(this)
     }
+
 }
